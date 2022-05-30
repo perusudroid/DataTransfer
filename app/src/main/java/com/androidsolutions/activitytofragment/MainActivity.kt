@@ -1,36 +1,48 @@
 package com.androidsolutions.activitytofragment
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.core.os.bundleOf
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.androidsolutions.activitytofragment.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() ,IMainContractor{
+class MainActivity : AppCompatActivity(){
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val fragment by lazy { MainFragment() }
+    private val fragAdapter by lazy { VPAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        doLoadFragment()
+        initVP()
         initClicks()
     }
 
+    private fun initVP() {
+        binding.viewPager.offscreenPageLimit = 2
+        binding.viewPager.adapter = fragAdapter
+    }
+
     private fun initClicks() {
-        binding.btnSend.setOnClickListener {
-            fragment.showText(binding.etTxt.text.toString())
+        binding.btnSendToChat.setOnClickListener {
+            binding.viewPager.currentItem = 0
+            when(val frag = getCurrentFrag()){
+               is ChatFragment -> frag.showText(binding.etTxt.text.toString())
+            }
+            binding.etTxt.setText("")
+        }
+        binding.btnSendToStatus.setOnClickListener {
+            binding.viewPager.currentItem = 1
+            when(val frag = getCurrentFrag()){
+                is StatusFragment -> frag.showText(binding.etTxt.text.toString())
+            }
             binding.etTxt.setText("")
         }
     }
 
-    private fun doLoadFragment() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.frameContainer, fragment)
-            .commit()
-    }
+    private fun getCurrentFrag() = supportFragmentManager.findFragmentByTag("f${binding.viewPager.currentItem}")
 
-    override fun setText(txt: String) {
+    fun setText(txt: String, label : String) {
         binding.tvTxt.text = txt
+        binding.tvLabel.text = label
     }
 }

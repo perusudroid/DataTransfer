@@ -14,7 +14,20 @@
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
            android:textSize="20sp"
+           tools:text="@string/app_name"
            android:textColor="@color/black"/>
+
+       <TextView
+           android:id="@+id/tvLabel"
+           android:gravity="center"
+           android:layout_gravity="center"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:textSize="12sp"
+           android:textStyle="italic"
+           tools:text="@string/app_name"
+           android:textColor="@color/black"/>
+
 
        <androidx.appcompat.widget.AppCompatEditText
            android:id="@+id/etTxt"
@@ -24,16 +37,32 @@
            android:layout_margin="10dp"
            />
 
-       <androidx.appcompat.widget.AppCompatButton
-           android:id="@+id/btnSend"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_gravity="center"
-           android:text="Send to Fragment"
-           />
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
 
-       <FrameLayout
-           android:id="@+id/frameContainer"
+          <androidx.appcompat.widget.AppCompatButton
+              android:id="@+id/btnSendToChat"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center"
+              android:textSize="14sp"
+              android:text="Send to Chat Fragment"
+              />
+
+          <androidx.appcompat.widget.AppCompatButton
+              android:id="@+id/btnSendToStatus"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textSize="14sp"
+              android:layout_gravity="center"
+              android:text="Send to Status Fragment"
+              />
+
+      </LinearLayout>
+
+       <androidx.viewpager2.widget.ViewPager2
+           android:id="@+id/viewPager"
            android:layout_width="match_parent"
            android:layout_height="match_parent"
            tools:context=".MainActivity" />
