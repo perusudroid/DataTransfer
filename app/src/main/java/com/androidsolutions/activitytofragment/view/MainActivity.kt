@@ -1,20 +1,31 @@
-package com.androidsolutions.activitytofragment
+package com.androidsolutions.activitytofragment.view
 
 import android.os.Bundle
-import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.androidsolutions.activitytofragment.DataObj
+import com.androidsolutions.activitytofragment.SharedViewModel
 import com.androidsolutions.activitytofragment.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(){
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val fragAdapter by lazy { VPAdapter(this) }
+    private val sharedViewModel by viewModels<SharedViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         initVP()
+        subscribeToObservers()
         initClicks()
+    }
+
+    private fun subscribeToObservers() {
+        sharedViewModel.data.observe(this){
+            binding.tvTxt.text = it.txt
+            binding.tvLabel.text = it.label
+        }
     }
 
     private fun initVP() {
@@ -25,15 +36,15 @@ class MainActivity : AppCompatActivity(){
     private fun initClicks() {
         binding.btnSendToChat.setOnClickListener {
             binding.viewPager.currentItem = 0
-            when(val frag = getCurrentFrag()){
-               is ChatFragment -> frag.showText(binding.etTxt.text.toString())
+            when(getCurrentFrag()){
+               is ChatFragment -> sharedViewModel.setChatValue(DataObj(binding.etTxt.text.toString()))
             }
             binding.etTxt.setText("")
         }
         binding.btnSendToStatus.setOnClickListener {
             binding.viewPager.currentItem = 1
-            when(val frag = getCurrentFrag()){
-                is StatusFragment -> frag.showText(binding.etTxt.text.toString())
+            when(getCurrentFrag()){
+                is StatusFragment -> sharedViewModel.setStatusValue(DataObj(binding.etTxt.text.toString()))
             }
             binding.etTxt.setText("")
         }
@@ -41,8 +52,4 @@ class MainActivity : AppCompatActivity(){
 
     private fun getCurrentFrag() = supportFragmentManager.findFragmentByTag("f${binding.viewPager.currentItem}")
 
-    fun setText(txt: String, label : String) {
-        binding.tvTxt.text = txt
-        binding.tvLabel.text = label
-    }
 }
